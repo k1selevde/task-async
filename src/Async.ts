@@ -3,27 +3,22 @@
 который завершится через заданное количество миллисекунд со значением, переданным в аргумент.
  */
 export function mock(ms: number): Promise<number> {
+        return new Promise((resolve) => {
+            setTimeout(
+                () => resolve(ms), ms
+            )
+        })
 }
 
 /*
 Перепишите функцию getData так, чтобы она выполнялась быстрее.
  */
 export function getData(): Promise<number[]> {
-    const result: number[] = [];
-
-    return mock(100)
-        .then((data1) => {
-            result.push(data1);
-            return mock(200);
-        })
-        .then((data2) => {
-            result.push(data2);
-            return mock(300);
-        })
-        .then((data3) => {
-            result.push(data3);
-            return result;
-        });
+    return Promise.all([
+        mock(100),
+        mock(200),
+        mock(300)]
+    )
 }
 
 /*
@@ -32,8 +27,8 @@ export function getData(): Promise<number[]> {
  */
 export async function catchException(): Promise<string | undefined> {
     try {
-        Promise.reject(new Error('my error'));
+       await Promise.reject(new Error('my error'));
     } catch (err) {
-        return err.message;
+       return err.message;
     }
 }
